@@ -541,8 +541,8 @@
           </tr>
           <tr>
             <td class="row-name">运行平台</td>
-            <td>Windows 10+</td>
-            <td>Windows Vista+ / Linux（glibc）/ Android 7+（Termux，arm64）</td>
+            <td>Windows 10 及以上（x64 为主）；沙箱运行器最低 Win8+，整体以 Node.js 24+ 要求为准</td>
+            <td>Windows Vista+ / Linux（glibc）/ Android 7+（Termux）；x64 与 ARM64 双架构</td>
           </tr>
           <tr>
             <td class="row-name">界面</td>
@@ -586,6 +586,10 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="reveal" style="margin-top: 26px; display: grid; gap: 10px; font-size: 13.5px; color: var(--text-faint);">
+      <div><b style="color: var(--text-dim);">NoldOJ 平台：</b>仅支持 Windows（x64 为主，依赖 Node.js 24+；沙箱运行器 <code>sandbox_runner.exe</code> 需用 MinGW-w64 的 g++ 自行编译，最低 Win8+），暂不支持 Linux / macOS 直接运行。</div>
+      <div><b style="color: var(--text-dim);">CliJudge 平台：</b>单文件二进制，x64 / ARM64 均有构建；Windows Vista+、Linux（glibc）、Android 7+（Termux，仅 arm64）。npm 安装会自动按平台与架构挑选预编译产物，ARM64 版在 Release 中可单独下载。</div>
     </div>
   </div>
 </section>
