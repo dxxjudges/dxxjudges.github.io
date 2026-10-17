@@ -1,0 +1,6 @@
+# Piper 语音模型（体积大，不入库）
+voices/
+# 构建产物
+out/
+__pycache__/
+*.pyc
