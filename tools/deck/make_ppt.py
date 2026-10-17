@@ -380,17 +380,19 @@ def links(prs, s, page, total):
 
 def cta(prs, s, page=1, total=1):
     slide = blank(prs)
-    # 光带压在 logo 下缘，和封面保持一致；放在 y=3.3 会横穿标题
-    gradient_banner(slide, 0, Inches(2.58), W, Inches(0.05))
+    # 与封面一致：光带下移 50px，并把下方文案整体跟着挪，
+    # 只挪光带会正好落到标题上（2.93in 落在标题框 2.92~3.72 内）
+    drop = preview_px(50)
+    gradient_banner(slide, 0, Inches(2.58) + drop, W, Inches(0.05))
 
     if os.path.exists(LOGO):
         slide.shapes.add_picture(LOGO, W // 2 - Inches(0.6), Inches(1.5),
                                  Inches(1.2), Inches(1.2))
-    text(slide, 0, Inches(2.92), W, Inches(0.8), s["title"], size=40,
+    text(slide, 0, Inches(2.92) + drop, W, Inches(0.8), s["title"], size=40,
          bold=True, align=PP_ALIGN.CENTER)
-    text(slide, 0, Inches(3.85), W, Inches(0.4), s["subtitle"], size=19,
+    text(slide, 0, Inches(3.85) + drop, W, Inches(0.4), s["subtitle"], size=19,
          color=DIM, align=PP_ALIGN.CENTER)
-    text(slide, 0, Inches(4.55), W, Inches(0.4), s["note"], size=15,
+    text(slide, 0, Inches(4.55) + drop, W, Inches(0.4), s["note"], size=15,
          color=CYAN, align=PP_ALIGN.CENTER)
     footer(slide, page, total)
     notes(slide, s["say"])
