@@ -39,6 +39,12 @@ FONT_MONO = "Consolas"
 
 W, H = Inches(13.333), Inches(7.5)
 MARGIN = Inches(0.9)
+PREVIEW_PX_W = 1920          # PNG 预览导出宽度，preview_px() 据此换算
+
+
+def preview_px(n):
+    """把「预览里的像素」换算成 EMU，便于口头微调位置。"""
+    return Emu(int(round(n / float(PREVIEW_PX_W) * W)))
 
 
 # ── 基础绘制工具 ──────────────────────────────────────────────────────────
@@ -172,7 +178,8 @@ def notes(slide, say):
 # ── 版式 ──────────────────────────────────────────────────────────────────
 def cover(prs, s, page=1, total=1):
     slide = blank(prs)
-    gradient_banner(slide, 0, Inches(2.42), W, Inches(0.05))
+    # 光带默认 2.42in，下移 50px（按 1920px 宽预览折算）
+    gradient_banner(slide, 0, Inches(2.42) + preview_px(50), W, Inches(0.05))
 
     if os.path.exists(LOGO):
         slide.shapes.add_picture(LOGO, W // 2 - Inches(0.72),
