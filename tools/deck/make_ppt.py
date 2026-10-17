@@ -211,12 +211,16 @@ def bullets(prs, s, page, total):
     header(slide, s["tag"], s["title"], s.get("lead"))
 
     top = Inches(2.45)
-    gap = Inches(1.14)
+    n = len(s["items"])
+    card_h = Inches(0.96)
+    # 按条目数自适应行距，5 条也不会顶到页脚
+    avail = (H - Inches(0.95)) - top
+    gap = min(Inches(1.14), (avail - card_h) / max(n - 1, 1))
     for i, (head, body) in enumerate(s["items"]):
         y = top + gap * i
-        rect(slide, MARGIN, y, Inches(11.53), Inches(0.96))
-        accent = (INDIGO, CYAN, VIOLET, GREEN)[i % 4]
-        rect(slide, MARGIN, y, Inches(0.06), Inches(0.96),
+        rect(slide, MARGIN, y, Inches(11.53), card_h)
+        accent = (INDIGO, CYAN, VIOLET, GREEN, AMBER)[i % 5]
+        rect(slide, MARGIN, y, Inches(0.06), card_h,
              fill=accent, line=None, radius=0.5)
         text(slide, MARGIN + Inches(0.34), y + Inches(0.16), Inches(3.0),
              Inches(0.6), head, size=17, bold=True)

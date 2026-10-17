@@ -13,7 +13,7 @@ REPO_NOLD = "https://github.com/dxxjudges/NoldOJ"
 REPO_CLI = "https://github.com/dxxjudges/clijudge"
 
 DECK_TITLE = "dxxjudges"
-DECK_SUB = "开源在线评测系统（OJ）组织 · 组织介绍"
+DECK_SUB = "开源评测系统（OJ）组织 · 组织介绍"
 DECK_FOOT = "nold.dxxj.de5.net · jl.dxxj.de5.net · github.com/dxxjudges"
 
 
@@ -24,7 +24,7 @@ SLIDES = [
         title=DECK_TITLE,
         subtitle=DECK_SUB,
         note=DECK_FOOT,
-        say="欢迎了解 dxxjudges。我们是一个专注在线评测系统的开源组织，"
+        say="欢迎了解 dxxjudges。我们是一个专注评测系统的开源组织，"
             "旗下有 NoldOJ 和 CliJudge 两款项目。",
     ),
     dict(
@@ -33,14 +33,16 @@ SLIDES = [
         title="我们是谁",
         lead="一个把「安全评测」当作基础设施来做的开源组织。",
         items=[
-            ("专注单一赛道", "持续打磨在线评测系统（OJ），不做无关的方向发散"),
+            ("专注单一赛道", "持续打磨评测系统（OJ），不做无关的方向发散"),
             ("两种形态", "NoldOJ 面向学校与团队的完整 Web 平台；CliJudge 面向个人的命令行评测器"),
             ("同一套内核", "沙箱隔离、评测语义、语言体系、题库格式在两个项目间保持一致"),
+            ("本地优先", "下载后本地运行，完全离线可用；站点只是可选的托管实例"),
             ("开源优先", "MIT License，源码、Wiki、发布包全部公开，欢迎 Issue 与 PR"),
         ],
-        say="dxxjudges 专注在线评测这一个赛道。我们维护两款产品："
+        say="dxxjudges 专注评测系统这一个赛道。我们维护两款产品："
             "NoldOJ 是面向学校和团队的完整网页平台，CliJudge 是面向个人的命令行评测器。"
-            "两者共享同一套沙箱内核与评测语义，并且都以 MIT 协议开源。",
+            "两者共享同一套沙箱内核与评测语义，都可以下载后本地离线运行，"
+            "并且都以 MIT 协议开源。",
     ),
     dict(
         kind="cards",
@@ -50,13 +52,13 @@ SLIDES = [
         cards=[
             dict(
                 title="NoldOJ",
-                sub="Windows 在线评测系统 · Web 全栈",
+                sub="Windows 评测系统 · 本地部署的 Web 平台",
                 site="nold.dxxj.de5.net",
                 url=SITE_NOLD,
                 repo=REPO_NOLD,
                 points=[
                     "30+ 前端页面 · 100+ API 端点",
-                    "比赛 / Rating / 题单 / 在线 IDE",
+                    "比赛 / Rating / 题单 / 浏览器 IDE",
                     "AI 代码安全审查与代码查重",
                     "Node.js 24 + SQLite，一条命令启动",
                 ],
@@ -83,7 +85,7 @@ SLIDES = [
         kind="bullets",
         tag="NoldOJ",
         title="NoldOJ · Windows Web OJ",
-        lead="一条命令启动的完整在线评测平台，装好依赖约 1.83 GB。",
+        lead="一条命令启动的完整评测平台，装好依赖约 1.83 GB，完全离线可用。",
         items=[
             ("评测核心", "C / C++ / Python 3 / Java / JavaScript，面板动态扩展语言；严格、宽松、浮点容差与 Special Judge 四种比较模式"),
             ("社区生态", "讨论区、题解区、文章与公告、题目标签与难度、模糊搜索、图床"),
@@ -186,24 +188,25 @@ SLIDES = [
         kind="links",
         tag="Ecosystem",
         title="资源与文档",
-        lead="文档托管在各仓库的 Wiki 与站点上，全部公开。",
+        lead="两套系统下载后都能完全本地离线运行；站点只是可选的托管实例。",
         groups=[
             ("NoldOJ", [
-                ("在线站点", SITE_NOLD),
+                ("站点", SITE_NOLD),
                 ("GitHub 仓库", REPO_NOLD),
                 ("Wiki 文档", REPO_NOLD + "/wiki"),
                 ("Releases 下载", REPO_NOLD + "/releases"),
                 ("支持中心", SITE_NOLD + "/support.html"),
             ]),
             ("CliJudge", [
-                ("在线站点", SITE_CLI),
+                ("站点", SITE_CLI),
                 ("GitHub 仓库", REPO_CLI),
                 ("Wiki 文档", REPO_CLI + "/wiki"),
                 ("Releases 下载", REPO_CLI + "/releases"),
                 ("npm 安装", "https://www.npmjs.com/package/clijudge"),
             ]),
         ],
-        say="所有资源都可以公开获取：在线站点、源码仓库、Wiki 文档和发布包，"
+        say="NoldOJ 和 CliJudge 都可以下载后本地离线运行，站点只是可选的托管实例。"
+            "源码仓库、Wiki 文档和发布包全部公开。"
             "CliJudge 还提供 npm 一行安装。",
     ),
     dict(
