@@ -36,13 +36,12 @@ SLIDES = [
             ("专注单一赛道", "持续打磨评测系统（OJ），不做无关的方向发散"),
             ("两种形态", "NoldOJ 面向学校与团队的完整 Web 平台；CliJudge 面向个人的命令行评测器"),
             ("同一套内核", "沙箱隔离、评测语义、语言体系、题库格式在两个项目间保持一致"),
-            ("本地优先", "下载后本地运行，完全离线可用；站点只是可选的托管实例"),
+            ("一在线一离线", "NoldOJ 是浏览器访问的在线评测平台；CliJudge 是下载即用、完全离线的命令行评测器"),
             ("开源优先", "MIT License，源码、Wiki、发布包全部公开，欢迎 Issue 与 PR"),
         ],
         say="dxxjudges 专注评测系统这一个赛道。我们维护两款产品："
-            "NoldOJ 是面向学校和团队的完整网页平台，CliJudge 是面向个人的命令行评测器。"
-            "两者共享同一套沙箱内核与评测语义，都可以下载后本地离线运行，"
-            "并且都以 MIT 协议开源。",
+            "NoldOJ 是面向学校和团队的在线 Web 平台，CliJudge 是面向个人的离线命令行评测器。"
+            "两者共享同一套沙箱内核与评测语义，并且都以 MIT 协议开源。",
     ),
     dict(
         kind="cards",
@@ -52,7 +51,7 @@ SLIDES = [
         cards=[
             dict(
                 title="NoldOJ",
-                sub="Windows 评测系统 · 本地部署的 Web 平台",
+                sub="Windows 在线评测系统 · Web 全栈",
                 site="nold.dxxj.de5.net",
                 url=SITE_NOLD,
                 repo=REPO_NOLD,
@@ -70,7 +69,7 @@ SLIDES = [
                 url=SITE_CLI,
                 repo=REPO_CLI,
                 points=[
-                    "单文件可执行 · 零外部依赖",
+                    "单文件可执行 · 完全离线可用",
                     "JSON 存储，备份迁移方便",
                     "测试点生成器 · LemonLime CDF 互操作",
                     "npm 一行安装，自动选架构",
@@ -85,7 +84,7 @@ SLIDES = [
         kind="bullets",
         tag="NoldOJ",
         title="NoldOJ · Windows Web OJ",
-        lead="一条命令启动的完整评测平台，装好依赖约 1.83 GB，完全离线可用。",
+        lead="一条命令启动的完整在线评测平台，装好依赖约 1.83 GB。",
         items=[
             ("评测核心", "C / C++ / Python 3 / Java / JavaScript，面板动态扩展语言；严格、宽松、浮点容差与 Special Judge 四种比较模式"),
             ("社区生态", "讨论区、题解区、文章与公告、题目标签与难度、模糊搜索、图床"),
@@ -188,7 +187,7 @@ SLIDES = [
         kind="links",
         tag="Ecosystem",
         title="资源与文档",
-        lead="两套系统下载后都能完全本地离线运行；站点只是可选的托管实例。",
+        lead="NoldOJ 提供可直接访问的在线站点，CliJudge 则完全离线本地运行；文档与源码全部公开。",
         groups=[
             ("NoldOJ", [
                 ("站点", SITE_NOLD),
@@ -205,7 +204,7 @@ SLIDES = [
                 ("npm 安装", "https://www.npmjs.com/package/clijudge"),
             ]),
         ],
-        say="NoldOJ 和 CliJudge 都可以下载后本地离线运行，站点只是可选的托管实例。"
+        say="NoldOJ 有可直接访问的在线站点，CliJudge 则可以完全离线本地运行。"
             "源码仓库、Wiki 文档和发布包全部公开。"
             "CliJudge 还提供 npm 一行安装。",
     ),
