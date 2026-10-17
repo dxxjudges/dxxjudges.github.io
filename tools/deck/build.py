@@ -75,7 +75,8 @@ def main():
     import embed_audio
     import powerpoint_finalize
 
-    if powerpoint_finalize.available():
+    use_com = powerpoint_finalize.available()
+    if use_com:
         print("  检测到 PowerPoint COM，由 PowerPoint 写入媒体与播放设置")
         sys.argv = ["powerpoint_finalize.py"]
         if args.no_export:
@@ -98,13 +99,13 @@ def main():
     # 4) 自检
     step(4, total, "校验")
     targets = ["dxxjudges-intro-audio.pptx"]
-    if not powerpoint_finalize.available():
+    if not use_com:
         targets.append("dxxjudges-intro-autoplay.pptx")
     for name in targets:
         path = os.path.join(OUT, name)
         if not os.path.exists(path):
             continue
-        problems, n = embed_audio.validate(path)
+        problems, n = embed_audio.validate(path, require_autoplay=use_com)
         status = "OK" if not problems else "%d 项异常" % len(problems)
         print("  %-38s %7.1f KB  %d 页带音频  %s"
               % (name, os.path.getsize(path) / 1024, n, status))

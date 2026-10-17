@@ -14,9 +14,9 @@ python-pptx 没有音频 API，所以这里在 zip 层面操作：
 """
 
 import argparse
-import copy
 import json
 import os
+import re
 import shutil
 import zipfile
 
@@ -235,8 +235,11 @@ def make_poster(path):
     img.save(path)
 
 
-def validate(path):
-    """结构自检：所有部件可解析、引用的 r:id 都存在、媒体非空。"""
+def validate(path, require_autoplay=False):
+    """结构自检：所有部件可解析、引用的 r:id 都存在、媒体非空。
+
+    require_autoplay=True 时额外要求 timing 树里带 onBegin 触发条件与
+    withEffect 叶子节点（PowerPoint COM 产物才应满足）。"""
     problems = []
     with zipfile.ZipFile(path) as z:
         bad = z.testzip()
@@ -250,6 +253,8 @@ def validate(path):
 
         names = z.namelist()
         n_audio = 0
+        total_slides = len([n for n in names
+                            if n.startswith("ppt/slides/slide") and n.endswith(".xml")])
         for name in names:
             if not name.endswith(".xml") and not name.endswith(".rels"):
                 if name.startswith("ppt/media/"):
@@ -275,6 +280,19 @@ def validate(path):
                         problems.append("%s 引用了不存在的 %s" % (slide, v))
             if any(el.tag == "{%s}audioFile" % NS["a"] for el in sld.iter()):
                 n_audio += 1
+                raw = z.read(slide).decode("utf-8", "ignore")
+                if require_autoplay:
+                    # 真自动播放必须同时具备 onBegin 触发条件与 withEffect 叶子节点，
+                    # 只有 delay="indefinite" 的是「点击才播」
+                    if 'evt="onBegin"' not in raw or 'nodeType="withEffect"' not in raw:
+                        problems.append("%s 音频不是自动播放（缺 onBegin/withEffect）"
+                                        % slide)
+                    if "<p:transition" not in raw:
+                        problems.append("%s 没有切页动效" % slide)
+                    # 末页默认停在结尾，不设 advTm
+                    idx = int(re.search(r"slide(\d+)\.xml$", slide).group(1))
+                    if "advTm" not in raw and idx != total_slides:
+                        problems.append("%s 没有定时切页（advTm）" % slide)
         if n_audio == 0:
             problems.append("没有任何页面嵌入音频")
     return problems, n_audio
