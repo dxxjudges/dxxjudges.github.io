@@ -96,14 +96,14 @@ def text(slide, x, y, w, h, runs, size=18, color=TEXT, bold=False, font=FONT,
                 para = new_para(tf)
             run = para.add_run()
             run.text = body
-            style(run, size, color, bold, font, opts, align, line, space)
+            style(para, run, size, color, bold, font, opts, align, line, space)
         else:
             para = None
             for line_text in chunk.split("\n"):
                 para = new_para(tf)
                 run = para.add_run()
                 run.text = line_text or " "
-                style(run, size, color, bold, font, {}, align, line, space)
+                style(para, run, size, color, bold, font, {}, align, line, space)
     return box
 
 
@@ -113,17 +113,18 @@ def new_para(tf):
     return tf.add_paragraph()
 
 
-def style(run, size, color, bold, font, opts, align, line, space):
+def style(para, run, size, color, bold, font, opts, align, line, space):
     f = run.font
     f.size = Pt(opts.get("size", size))
     f.bold = opts.get("bold", bold)
     f.color.rgb = opts.get("color", color)
     f.name = opts.get("font", font)
-    p = run._r.getparent()
-    p.alignment = opts.get("align", align)
-    p.line_spacing = opts.get("line", line)
+    # 段落属性必须写在段落对象上；早期版本从 run._r.getparent() 取段落，
+    # 结果 algn / lnSpc 全部丢失（字号颜色却正常），很难发现。
+    para.alignment = opts.get("align", align)
+    para.line_spacing = opts.get("line", line)
     if space:
-        p.space_after = Pt(space)
+        para.space_after = Pt(space)
 
 
 def gradient_banner(slide, x, y, w, h, c1=INDIGO, c2=CYAN):
@@ -222,7 +223,7 @@ def cards(prs, s, page, total):
     slide = blank(prs)
     header(slide, s["tag"], s["title"], s.get("lead"))
 
-    cw, ch = Inches(5.62), Inches(3.5)
+    cw, ch = Inches(5.62), Inches(3.05)
     for i, card in enumerate(s["cards"]):
         x = MARGIN + (cw + Inches(0.29)) * i
         y = Inches(2.45)
@@ -230,19 +231,18 @@ def cards(prs, s, page, total):
         accent = INDIGO if i == 0 else CYAN
         rect(slide, x, y, cw, Inches(0.05), fill=accent, line=None, radius=0.5)
 
-        text(slide, x + Inches(0.36), y + Inches(0.34), cw - Inches(0.72),
+        text(slide, x + Inches(0.36), y + Inches(0.3), cw - Inches(0.72),
              Inches(0.4), card["title"], size=24, bold=True, color=accent)
-        text(slide, x + Inches(0.36), y + Inches(0.82), cw - Inches(0.72),
+        text(slide, x + Inches(0.36), y + Inches(0.78), cw - Inches(0.72),
              Inches(0.34), card["sub"], size=13, color=FAINT)
-        text(slide, x + Inches(0.36), y + Inches(1.22), cw - Inches(0.72),
+        text(slide, x + Inches(0.36), y + Inches(1.16), cw - Inches(0.72),
              Inches(0.3), card["site"], size=14, bold=True, color=CYAN)
 
         body = "\n".join("· " + p for p in card["points"])
-        text(slide, x + Inches(0.36), y + Inches(1.72), cw - Inches(0.72),
-             Inches(1.3), body, size=13.5, color=DIM, line=1.45)
+        text(slide, x + Inches(0.36), y + Inches(1.62), cw - Inches(0.72),
+             Inches(1.3), body, size=13.5, color=DIM, line=1.55)
 
-    y = Inches(6.15)
-    text(slide, MARGIN, y, Inches(11.53), Inches(0.3),
+    text(slide, MARGIN, Inches(6.05), Inches(11.53), Inches(0.3),
          [("源码仓库  ", {"size": 12, "color": FAINT}),
           (content.REPO_NOLD.replace("https://", "") + "     ", {"size": 12, "color": DIM}),
           (content.REPO_CLI.replace("https://", ""), {"size": 12, "color": DIM})])
@@ -326,7 +326,7 @@ def code(prs, s, page, total):
     cw = Inches(5.62)
     for i, (title, lines) in enumerate(s["blocks"]):
         x = MARGIN + (cw + Inches(0.29)) * i
-        y, h = Inches(2.45), Inches(3.4)
+        y, h = Inches(2.45), Inches(2.85)
         rect(slide, x, y, cw, h, fill=RGBColor(0x0A, 0x0E, 0x1D))
         rect(slide, x, y, cw, Inches(0.42), fill=BG, line=None, radius=0.12)
         for k, c in enumerate((RGBColor(0xF8, 0x71, 0x71), AMBER, GREEN)):
@@ -341,9 +341,9 @@ def code(prs, s, page, total):
              Inches(0.28), title, size=12.5, bold=True, color=DIM)
 
         body = "\n".join(lines) if lines else " "
-        text(slide, x + Inches(0.3), y + Inches(0.66), cw - Inches(0.6),
-             h - Inches(0.9), body, size=12, color=RGBColor(0xC7, 0xD2, 0xFE),
-             font=FONT_MONO, line=1.5)
+        text(slide, x + Inches(0.3), y + Inches(0.68), cw - Inches(0.6),
+             h - Inches(0.92), body, size=12, color=RGBColor(0xC7, 0xD2, 0xFE),
+             font=FONT_MONO, line=1.7)
     footer(slide, page, total)
     notes(slide, s["say"])
 
@@ -373,7 +373,8 @@ def links(prs, s, page, total):
 
 def cta(prs, s, page=1, total=1):
     slide = blank(prs)
-    gradient_banner(slide, 0, Inches(3.3), W, Inches(0.05))
+    # 光带压在 logo 下缘，和封面保持一致；放在 y=3.3 会横穿标题
+    gradient_banner(slide, 0, Inches(2.58), W, Inches(0.05))
 
     if os.path.exists(LOGO):
         slide.shapes.add_picture(LOGO, W // 2 - Inches(0.6), Inches(1.5),

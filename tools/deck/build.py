@@ -26,9 +26,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-audio", action="store_true")
     ap.add_argument("--no-autoplay", action="store_true")
+    ap.add_argument("--no-export", action="store_true",
+                    help="跳过 PNG 预览导出（PowerPoint 收尾阶段）")
     ap.add_argument("--voice", default=os.path.join(
         HERE, "voices", "zh_CN-huayan-medium.onnx"))
     args = ap.parse_args()
+    argv0 = list(sys.argv)
 
     total = 3 if args.skip_audio else 4
     t0 = time.time()
@@ -58,26 +61,46 @@ def main():
         raise SystemExit(
             "缺少语音模型 %s\n请下载 zh_CN-huayan-medium.onnx{,.json} 到 voices/" % args.voice)
     sys.argv = ["make_audio.py", "--voice", args.voice]
-    make_audio.main()
+    try:
+        make_audio.main()
+    finally:
+        sys.argv = argv0          # 子脚本会解析 sys.argv，必须还原
     with open(os.path.join(AUDIO, "manifest.json"), encoding="utf-8") as f:
         manifest = json.load(f)
     print("  解说 %.1fs，输出 %d 个音频文件"
           % (manifest["total_duration"], len(manifest["slides"]) + 4))
 
-    # 3) 嵌入音频
+    # 3) 嵌入音频：优先 PowerPoint COM（输出由 PowerPoint 自己写，天然合法）
     step(3, total, "嵌入逐页配音")
     import embed_audio
-    embed_audio.embed(pptx, os.path.join(OUT, "dxxjudges-intro-audio.pptx"),
-                      manifest, autoplay=False)
-    print("  dxxjudges-intro-audio.pptx（点图标播放，最稳妥）")
-    if not args.no_autoplay:
-        embed_audio.embed(pptx, os.path.join(OUT, "dxxjudges-intro-autoplay.pptx"),
-                          manifest, autoplay=True)
-        print("  dxxjudges-intro-autoplay.pptx（随页自动播放）")
+    import powerpoint_finalize
+
+    if powerpoint_finalize.available():
+        print("  检测到 PowerPoint COM，由 PowerPoint 写入媒体与播放设置")
+        sys.argv = ["powerpoint_finalize.py"]
+        if args.no_export:
+            sys.argv.append("--no-export")
+        rc = powerpoint_finalize.main()
+        sys.argv = argv0
+        if rc != 0:
+            raise SystemExit("PowerPoint 收尾失败")
+        print("  dxxjudges-intro-audio.pptx（随页自动播放 + 导出 PNG 预览）")
+    else:
+        print("  未检测到 PowerPoint，退回手写 OOXML")
+        embed_audio.embed(pptx, os.path.join(OUT, "dxxjudges-intro-audio.pptx"),
+                          manifest, autoplay=False)
+        print("  dxxjudges-intro-audio.pptx（点图标播放，最稳妥）")
+        if not args.no_autoplay:
+            embed_audio.embed(pptx, os.path.join(OUT, "dxxjudges-intro-autoplay.pptx"),
+                              manifest, autoplay=True)
+            print("  dxxjudges-intro-autoplay.pptx（随页自动播放）")
 
     # 4) 自检
     step(4, total, "校验")
-    for name in ("dxxjudges-intro-audio.pptx", "dxxjudges-intro-autoplay.pptx"):
+    targets = ["dxxjudges-intro-audio.pptx"]
+    if not powerpoint_finalize.available():
+        targets.append("dxxjudges-intro-autoplay.pptx")
+    for name in targets:
         path = os.path.join(OUT, name)
         if not os.path.exists(path):
             continue
