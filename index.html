@@ -6,13 +6,17 @@
 <title>dxxjudges - 开源在线评测系统（OJ）组织</title>
 <meta name="description" content="dxxjudges 是一个专注于在线评测系统（OJ）的开源组织，代表作：NoldOJ（Windows Web 在线评测系统）与 CliJudge（Windows / Linux 命令行评测系统）。">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/logo/png/logo-256.png">
 <meta property="og:title" content="dxxjudges - 开源在线评测系统（OJ）组织">
 <meta property="og:description" content="NoldOJ 与 CliJudge 两套开源在线评测系统：Web 全栈与命令行双形态，共享同一套沙箱安全内核。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://github.com/dxxjudges">
+<meta property="og:image" content="https://dxxj.de5.net/assets/logo/png/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="dxxjudges - 开源在线评测系统（OJ）组织">
 <meta name="twitter:description" content="NoldOJ 与 CliJudge 两套开源在线评测系统：Web 全栈与命令行双形态，共享同一套沙箱安全内核。">
+<meta name="twitter:image" content="https://dxxj.de5.net/assets/logo/png/og-image.png">
 <style>
   :root {
     --bg: #0b1020;
@@ -66,10 +70,7 @@
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: .5px; }
   .brand .logo {
-    width: 30px; height: 30px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: grid; place-items: center;
-    color: #fff; font-size: 15px; font-weight: 800;
+    width: 32px; height: 32px; border-radius: 8px; display: block; flex: none;
   }
   .nav-links { display: flex; gap: 26px; font-size: 14px; color: var(--text-dim); }
   .nav-links a { transition: color .2s; }
@@ -282,7 +283,7 @@
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top"><span class="logo">DX</span> dxxjudges</a>
+    <a class="brand" href="#top"><img class="logo" src="assets/logo/logo.svg" alt="dxxjudges"> dxxjudges</a>
     <button class="nav-toggle" aria-label="菜单">☰</button>
     <div class="nav-links">
       <a href="#projects">项目一览</a>
@@ -727,7 +728,7 @@ clijudge problem create "A + B Problem"</code></pre>
 
 <footer>
   <div class="wrap">
-    <a class="brand" href="#top"><span class="logo">DX</span> dxxjudges</a>
+    <a class="brand" href="#top"><img class="logo" src="assets/logo/logo.svg" alt="dxxjudges"> dxxjudges</a>
     <p style="margin-top: 12px;">开源在线评测系统组织 · NoldOJ &amp; CliJudge · MIT License</p>
     <p style="margin-top: 8px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
       <a href="https://nold.dxxj.de5.net" target="_blank" rel="noopener" style="color: var(--accent-2);">NoldOJ 站点</a>

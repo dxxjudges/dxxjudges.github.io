@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="dxxjudges">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#g)"/>
+  <g transform="translate(0 0)">
+  <path d="M366 340 L250 512 L366 684" fill="none" stroke="#fff" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M658 340 L774 512 L658 684" fill="none" stroke="#fff" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M466 380 H558 a30 30 0 0 1 30 30 V502 C588 566 556 610 512 646 C468 610 436 566 436 502 V410 a30 30 0 0 1 30 -30 Z" fill="#fff"/>
+  </g>
+</svg>
