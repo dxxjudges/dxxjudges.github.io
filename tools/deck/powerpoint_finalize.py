@@ -75,6 +75,7 @@ def set_transitions(pres, manifest, effect="dissolve", pad=1.2,
 
     AdvanceOnTime  + AdvanceTime = 定时自动翻页
     AdvanceOnClick 保留，这样演讲时仍可手动接管节奏
+    advance_last=False 时末页停在结尾，不自动翻页
     """
     effect_id = TRANSITIONS[effect]
     n = pres.Slides.Count
@@ -247,8 +248,8 @@ def main():
     ap.add_argument("--check-only", action="store_true")
     ap.add_argument("--no-advance", action="store_true",
                     help="不开启定时自动切页")
-    ap.add_argument("--advance-last", action="store_true",
-                    help="末页也定时切页（默认停在末页）")
+    ap.add_argument("--no-advance-last", action="store_true",
+                    help="末页不自动切页（默认末页也定时切页）")
     ap.add_argument("--pad", type=float, default=1.2,
                     help="每页解说结束到翻页的留白秒数")
     ap.add_argument("--transition", default="dissolve",
@@ -287,7 +288,7 @@ def main():
         set_transitions(pres, manifest, effect=args.transition, pad=args.pad,
                         duration=args.transition_seconds,
                         advance=not args.no_advance,
-                        advance_last=args.advance_last)
+                        advance_last=not args.no_advance_last)
 
         pres.SaveAs(PPTX_AUDIO, ppSaveAsOpenXMLPresentation)
         print("已保存: %s (%.1f KB)" % (os.path.basename(PPTX_AUDIO),
@@ -302,7 +303,7 @@ def main():
         pres = open_presentation(app, PPTX_AUDIO)
         media = sum(s.TimeLine.MainSequence.Count for s in pres.Slides)
         print("回读校验: %d 页，%d 个媒体对象" % (pres.Slides.Count, media))
-        problems = verify_show(pres, advance_last=args.advance_last)
+        problems = verify_show(pres, advance_last=not args.no_advance_last)
         if problems:
             for p in problems:
                 print("  ! " + p)
