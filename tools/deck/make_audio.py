@@ -44,7 +44,7 @@ def _open_utf8(file, mode="r", *args, **kwargs):
 
 builtins.open = _open_utf8
 
-from piper_onnx import Piper  # noqa: E402  (必须在 open shim 之后导入)
+from piper_onnx import Piper, phonemize  # noqa: E402  (必须在 open shim 之后导入)
 
 
 # ── 音频小工具 ────────────────────────────────────────────────────────────
@@ -107,12 +107,21 @@ def split_sentences(text):
     return [p for p in parts if p]
 
 
-def synth_slide(piper, text, length_scale=1.05):
+def synth_slide(piper, text, length_scale=1.05, voice="cmn"):
+    """逐句合成。
+
+    必须自己先按模型配置的 espeak voice（中文模型是 cmn）转音素，
+    再以 is_phonemes=True 送进模型：piper-onnx 内部的 phonemize() 默认
+    language='en-us'，会把汉字全部读成英文音素（tʃ a ɪ n iː z ...）。
+    """
+    sentences = split_sentences(text)
     chunks = []
-    for i, sentence in enumerate(split_sentences(text)):
-        audio, sr = piper.create(sentence, length_scale=length_scale)
+    for i, sentence in enumerate(sentences):
+        ph = phonemize(sentence, language=voice)
+        audio, sr = piper.create(ph, is_phonemes=True,
+                                 length_scale=length_scale)
         chunks.append(np.asarray(audio, dtype=np.float32))
-        if i < len(split_sentences(text)) - 1:
+        if i < len(sentences) - 1:
             chunks.append(np.zeros(int(SENT_GAP * sr), dtype=np.float32))
     if not chunks:
         return np.zeros(int(0.5 * VOICE_SR), dtype=np.float32)
@@ -167,13 +176,17 @@ def main():
 
     os.makedirs(OUT, exist_ok=True)
     print("Piper: %s" % os.path.basename(args.voice))
+    with open(cfg, encoding="utf-8") as f:
+        espeak_voice = json.load(f).get("espeak", {}).get("voice", "cmn")
     piper = Piper(args.voice, cfg)
-    print("  sample rate: %d Hz" % piper.sample_rate)
+    print("  sample rate: %d Hz   espeak voice: %s" % (piper.sample_rate,
+                                                      espeak_voice))
 
     # 1) 逐页配音
     clips, layout = [], []
     for i, slide in enumerate(content.SLIDES, start=1):
-        audio = synth_slide(piper, slide["say"], args.length_scale)
+        audio = synth_slide(piper, slide["say"], args.length_scale,
+                            voice=espeak_voice)
         clips.append(audio)
         layout.append((i, slide.get("title", slide.get("subtitle", "")),
                        len(audio) / SR))
